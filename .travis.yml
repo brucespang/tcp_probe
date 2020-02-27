@@ -1,4 +1,12 @@
 language: python
 install:
-  - pip install .
+- pip install .
 script: make test
+deploy:
+  provider: pypi
+  user: __token__
+  on:
+    tags: true
+  skip_existing: true
+  password:
+    secure: YhSL2f5ny85AP/brxnEUkAj6Q5XfEyHpZYOsXio7q/ceGN/ReXxIMSQB3DxJP2zDGBfJP7n96uBmkFjw30h6Beze1SGm+Oa3rfZAGr/f3Gw0jG/lnXLjd3kD/JpFaEjIQw9r9z6k3UROIGNS1VJBLOYZCS81Dr832rqf/HSNg8J0dgNyb8oeCtfW6+CRuhyRCilCOIr5xrhtf6YrJdkCTCSWkqN/heM8jJcVH71QLMb2dNMnI9lUC6pjKmAgIBTlryf+36JQSZNTJH1/DljNUl0zr5JGLRNA+z75yVKrH5WE0THD+dHHeTCn7bTS8kU/HSBrx9BLcs2cXM+ternGC9t4FJWYgqKFr1a1jsHaWd/H+3neSU9bV2SSNPdftn1vRsi+NrGhpmnhgoCkd5hSp0QZqQ9PKa0N2IWe6JXXsfjqRbsCpc8Ui8iu+wl2ZLUYwJyqCTUJ3EBgmURfwWLh04Xy4n5zmlzHpF6VgBP9QlnXVeNCzr/Pf56Xqc5yt8NfH55MpuFiGIm15LmeMXUXGDmmjciZX35tQJjAYc1C4iaTCMPkiqlpnLg/7bOSoocFfmgkevZm7MTYxYZYQBGatmDqJXrIXB41+CqrsRtPyvGGJTP7yVITg9pHFyTKeefax/eTaOH0kvym5gMjrBeI53Mxs46SNJcrrQ7b/HGcSYs=

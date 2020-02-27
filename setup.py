@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="tcp_probe", # Replace with your own username
-    version="0.0.1a1",
+    version="0.0.1",
     author="Bruce Spang",
     author_email="bruce@brucespang.com",
     description="Tools for tracing TCP in Linux",
@@ -28,7 +28,7 @@ setuptools.setup(
         "Topic :: System :: Operating System Kernels :: Linux",
         "Topic :: System :: Networking :: Monitoring"
     ],
-    python_requires='>=3.6',
+    python_requires='>=3',
     entry_points={
         'console_scripts': [
             "tcp_probe = tcp_probe.cli:cli",
