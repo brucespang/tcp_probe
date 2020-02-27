@@ -10,7 +10,7 @@ from collections import defaultdict
 import tcp_probe.parser as parser
 plt.style.use(['plorts','plorts-print'])
 
-def plot_trace(output_dir, trace_path):
+def plot_trace(output_dir, trace_path, normalize_time):
     trace_dir = os.path.dirname(trace_path)
     trace_file = os.path.basename(trace_path)
 
@@ -22,18 +22,26 @@ def plot_trace(output_dir, trace_path):
 
     xmin,xmax=df.timestamp.min(), df.timestamp.max()
 
+    if normalize_time:
+        df['timestamp'] = df['timestamp'] - xmin
+        xlabel = "Timestamp (sec)"
+    else:
+        xlabel = "Timestamp"
+        
     num_plots = 3
     
     plt.figure(figsize=(18,15))
     plt.subplot(num_plots,1,1)
     plt.title("snd_cwnd")
     plorts.scatter(df, x="timestamp", y="snd_cwnd", hue=["sport", "dport"])
+    plt.xlabel(xlabel)
     plt.legend(loc='best')
 
     plt.subplot(num_plots,1,2)
     plt.title("srtt")
     plorts.scatter(df, x="timestamp", y="srtt", hue=["sport", "dport"])
     plt.axis(xmin=xmin, xmax=xmax)
+    plt.xlabel(xlabel)
     plt.legend(loc='best')
 
     plt.subplot(num_plots,1,3)
@@ -42,6 +50,9 @@ def plot_trace(output_dir, trace_path):
     df = pd.DataFrame(rows)
     
     if len(df) > 0:
+        if normalize_time:
+            df['timestamp'] = df['timestamp'] - xmin
+
         flow_ids = {}
         for sport in df.sport.unique():
             flow_ids[sport] = len(flow_ids)
@@ -50,6 +61,7 @@ def plot_trace(output_dir, trace_path):
         plt.title("retransmitted skbs")
         plorts.scatter(df, x="timestamp", y="flow_id", hue="sport")
         plt.axis(xmin=xmin, xmax=xmax)
+        plt.xlabel(xlabel)
 
     if output_dir is None:
         output_path = '%s.png'%(trace_path)

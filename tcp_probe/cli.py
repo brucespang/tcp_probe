@@ -37,11 +37,12 @@ def cli():
 
 @cli.command()
 @click.option('--output-dir', default=None, type=click.Path(exists=True))
+@click.option('--normalize-time/--raw-time', default=True, help="Show time from beginning of trace/wall-clock time")
 @click.argument('trace_path', metavar='trace', type=click.Path(exists=True))
-def plot(output_dir, trace_path):
+def plot(output_dir, normalize_time, trace_path):
     """Generate plots from a TCP trace"""
     import tcp_probe.plot
-    tcp_probe.plot.plot_trace(output_dir, trace_path)
+    tcp_probe.plot.plot_trace(output_dir, trace_path, normalize_time)
     
 @cli.command()
 @click.option('--clear/--no-clear', default=True, help="Whether to clear the kernel trace buffer before starting the trace")
