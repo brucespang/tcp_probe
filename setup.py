@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="tcp_probe", # Replace with your own username
-    version="0.0.1",
+    version="0.0.2",
     author="Bruce Spang",
     author_email="bruce@brucespang.com",
     description="Tools for tracing TCP in Linux",
