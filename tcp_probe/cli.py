@@ -4,32 +4,7 @@ import sys
 import os
 import subprocess
 import click
-
-def enable_event(event):
-    f = open("/sys/kernel/debug/tracing/events/%s/enable"%event, mode='w')
-    f.write('1')
-    f.close()
-
-def disable_event(event):
-    f = open("/sys/kernel/debug/tracing/events/%s/enable"%event, mode='w')
-    f.write('0')
-    f.close()
-    
-def set_trace_buffer_size(buffer_size_kb):
-    subprocess.call("echo %d > /sys/kernel/debug/tracing/buffer_size_kb"%buffer_size_kb,
-                    shell=True)
-
-def set_trace_filter(event, filter_string):
-    f = open("/sys/kernel/debug/tracing/events/%s/filter"%event, mode='w')
-    f.write(filter_string)
-    f.close()
-    
-def clear_trace_buffer():
-    subprocess.call('echo "" > /sys/kernel/debug/tracing/trace', shell=True)
-
-def validate_filter(ctx, param, filter_string):
-    # TODO: actually validate the filter string
-    return filter_string
+from trace import *
 
 @click.group()
 def cli():
@@ -70,9 +45,12 @@ def trace(clear, buffer_size, filter_string):
     if clear:
         clear_trace_buffer()
 
+    enable_tracing()
+
     try:
-        print(flush=True)
-        subprocess.call('cat /sys/kernel/debug/tracing/trace_pipe', shell=True)
+        print(flush=True, end='')
+
+        start_trace(sys.stdout)
     finally:
         for event in events:
             disable_event(event)
