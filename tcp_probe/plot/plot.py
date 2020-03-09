@@ -19,21 +19,25 @@ def plot_trace(output_dir, trace_path, normalize_time):
     rows = [parser.parse_tcp_probe_line(line) for line in lines]
     rows = [r for r in rows if r is not None]
     df = pd.DataFrame(rows)
-
-    xmin,xmax=df.timestamp.min(), df.timestamp.max()
-
+    
+    start_time = df.timestamp.min()
+    
     if normalize_time:
-        df['timestamp'] = df['timestamp'] - xmin
+        df['timestamp'] = df['timestamp'] - start_time
+        xmin = 0
+        xmax = df.timestamp.max()
         xlabel = "Timestamp (sec)"
     else:
         xlabel = "Timestamp"
+        xmin,xmax = start_time, df.timestamp.max()
         
     num_plots = 3
     
-    plt.figure(figsize=(18,15))
+    plt.figure(figsize=(18,5*num_plots))
     plt.subplot(num_plots,1,1)
     plt.title("snd_cwnd")
     plorts.scatter(df, x="timestamp", y="snd_cwnd", hue=["sport", "dport"])
+    plt.axis(xmin=xmin, xmax=xmax)
     plt.xlabel(xlabel)
     plt.legend(loc='best')
 
@@ -43,7 +47,7 @@ def plot_trace(output_dir, trace_path, normalize_time):
     plt.axis(xmin=xmin, xmax=xmax)
     plt.xlabel(xlabel)
     plt.legend(loc='best')
-
+    
     plt.subplot(num_plots,1,3)
     rows = [parser.parse_tcp_retransmit_skb_line(line) for line in lines]
     rows = [r for r in rows if r is not None]
@@ -51,7 +55,7 @@ def plot_trace(output_dir, trace_path, normalize_time):
     
     if len(df) > 0:
         if normalize_time:
-            df['timestamp'] = df['timestamp'] - xmin
+            df['timestamp'] = df['timestamp'] - start_time
 
         flow_ids = {}
         for sport in df.sport.unique():
@@ -66,6 +70,6 @@ def plot_trace(output_dir, trace_path, normalize_time):
     if output_dir is None:
         output_path = '%s.png'%(trace_path)
     else:
-        output_path = os.path.join(trace_dir, output_dir, '%s.png'%(trace_file))
+        output_path = os.path.join(trace_dir, output_dir, '%s.jpg'%(trace_file))
 
-    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.savefig(output_path, bbox_inches="tight")
