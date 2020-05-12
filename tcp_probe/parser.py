@@ -3,15 +3,20 @@ import sys
 import os
 import gzip
 import io
+import pandas as pd
 
-def open_trace(f):
+def open_trace(f, iterator=False):
     path = os.path.dirname(f)
     filename = os.path.basename(f)
     if '.gz' in filename:
-        lines = list(io.TextIOWrapper(gzip.open(f)))
+        lines = io.TextIOWrapper(gzip.open(f))
     else:
-        lines = list(open(f))
-    return lines
+        lines = open(f)
+        
+    if iterator:
+        return lines
+    else:
+        return list(lines)
 
 def parse_generic_line(line, integer_fields=set(), hex_fields=set()):
     fields = line.strip().split()
@@ -50,3 +55,20 @@ def parse_tcp_retransmit_skb_line(line):
     
     data = parse_generic_line(line, integer_fields=set(['sport', 'dport']))
     return data
+
+def parse_trace(f):
+    lines = open_trace(f, iterator=True)
+
+    tcp_probe_rows = []
+    retrans_rows = []
+    
+    for line in lines:
+        try:
+            if "tcp_probe" in line:
+                tcp_probe_rows.append(parse_tcp_probe_line(line))
+            elif "tcp_retransmit_skb" in line:
+                retrans_rows.append(parse_tcp_retransmit_skb_line(line))
+        except:
+            print("Exception parsing line:\n", line, "\n", sys.exc_info()[0])
+
+    return pd.DataFrame(tcp_probe_rows), pd.DataFrame(retrans_rows)

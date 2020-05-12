@@ -15,6 +15,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         'Click',
+        'lark',
         # technically yes, but creates annoying dependency issues on servers...
         # 'pandas'
         # 'plorts'

@@ -4,7 +4,7 @@ import sys
 import os
 import subprocess
 import click
-from trace import *
+from .trace import *
 
 @click.group()
 def cli():
@@ -12,12 +12,20 @@ def cli():
 
 @cli.command()
 @click.option('--output-dir', default=None, type=click.Path(exists=True))
+@click.option('--open/--no-open', 'open_result', default=False)
 @click.option('--normalize-time/--raw-time', default=True, help="Show time from beginning of trace/wall-clock time")
 @click.argument('trace_path', metavar='trace', type=click.Path(exists=True))
-def plot(output_dir, normalize_time, trace_path):
+def plot(output_dir, open_result, normalize_time, trace_path):
     """Generate plots from a TCP trace"""
     import tcp_probe.plot
-    tcp_probe.plot.plot_trace(output_dir, trace_path, normalize_time)
+    result_path = tcp_probe.plot.plot_trace(output_dir, trace_path, normalize_time)
+
+    if open_result:
+        subprocess.check_call("open %s"%(result_path), shell=True)
+
+def validate_filter(ctx, param, filter_string):
+    # TODO: actually validate the filter string
+    return filter_string
     
 @cli.command()
 @click.option('--clear/--no-clear', default=True, help="Whether to clear the kernel trace buffer before starting the trace")
@@ -50,7 +58,8 @@ def trace(clear, buffer_size, filter_string):
     try:
         print(flush=True, end='')
 
-        start_trace(sys.stdout)
+        p = start_trace(sys.stdout)
+        p.communicate()
     finally:
         for event in events:
             disable_event(event)

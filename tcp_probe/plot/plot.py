@@ -17,7 +17,7 @@ def plot_trace(output_dir, trace_path, normalize_time):
     lines = parser.open_trace(trace_path)
 
     rows = [parser.parse_tcp_probe_line(line) for line in lines]
-    rows = [r for r in rows if r is not None]
+    rows = [r for r in rows if r is not None and (r['sport'] != 22 and r['dport'] != 22)]
     df = pd.DataFrame(rows)
     
     start_time = df.timestamp.min()
@@ -49,6 +49,8 @@ def plot_trace(output_dir, trace_path, normalize_time):
     plt.legend(loc='best')
     
     plt.subplot(num_plots,1,3)
+    plt.title("retransmitted skbs")
+
     rows = [parser.parse_tcp_retransmit_skb_line(line) for line in lines]
     rows = [r for r in rows if r is not None]
     df = pd.DataFrame(rows)
@@ -62,7 +64,6 @@ def plot_trace(output_dir, trace_path, normalize_time):
             flow_ids[sport] = len(flow_ids)
         df["flow_id"] = [flow_ids[sport] for sport in df.sport]
 
-        plt.title("retransmitted skbs")
         plorts.scatter(df, x="timestamp", y="flow_id", hue="sport")
         plt.axis(xmin=xmin, xmax=xmax)
         plt.xlabel(xlabel)
@@ -73,3 +74,5 @@ def plot_trace(output_dir, trace_path, normalize_time):
         output_path = os.path.join(trace_dir, output_dir, '%s.jpg'%(trace_file))
 
     plt.savefig(output_path, bbox_inches="tight")
+    
+    return output_path

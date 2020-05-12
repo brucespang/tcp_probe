@@ -32,10 +32,6 @@ def set_trace_filter(event, filter_string):
 def clear_trace_buffer():
     subprocess.check_call('echo "" > /sys/kernel/debug/tracing/trace', shell=True)
 
-def validate_filter(ctx, param, filter_string):
-    # TODO: actually validate the filter string
-    return filter_string
-
 def start_trace(output):
     return subprocess.Popen(['cat', '/sys/kernel/debug/tracing/trace_pipe'],
                             stdout=output)
