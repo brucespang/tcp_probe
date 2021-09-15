@@ -17,7 +17,7 @@ setuptools.setup(
         'Click',
         'lark',
         # technically yes, but creates annoying dependency issues on servers...
-        # 'pandas'
+        'pandas'
         # 'plorts'
         # 'matplotlib'
         # 'numpy'
