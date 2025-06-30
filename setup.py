@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="tcp_probe", # Replace with your own username
-    version="0.0.3",
+    name="tcp_probe",
+    version="0.0.4",
     author="Bruce Spang",
     author_email="bruce@brucespang.com",
     description="Tools for tracing TCP in Linux",
@@ -14,10 +14,10 @@ setuptools.setup(
     url="https://github.com/brucespang/tcp_probe",
     packages=setuptools.find_packages(),
     install_requires=[
-        'Click',
-        'lark',
+        "Click",
+        "lark",
         # technically yes, but creates annoying dependency issues on servers...
-        'pandas'
+        "pandas",
         # 'plorts'
         # 'matplotlib'
         # 'numpy'
@@ -27,12 +27,12 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: POSIX :: Linux",
         "Topic :: System :: Operating System Kernels :: Linux",
-        "Topic :: System :: Networking :: Monitoring"
+        "Topic :: System :: Networking :: Monitoring",
     ],
-    python_requires='>=3',
+    python_requires=">=3",
     entry_points={
-        'console_scripts': [
+        "console_scripts": [
             "tcp_probe = tcp_probe.cli:cli",
         ]
-    }
+    },
 )
